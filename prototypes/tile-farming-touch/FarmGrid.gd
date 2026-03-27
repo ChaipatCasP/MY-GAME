@@ -21,13 +21,14 @@ func setup(c: int, r: int, size: int, gap: int) -> void:
 	tile_size = size
 	tile_gap = gap
 
-	# Center the grid on screen
+	# Center the grid on screen, pushed below the top HUD panel (90px)
 	var total_w: float = cols * (tile_size + tile_gap) - tile_gap
 	var total_h: float = rows * (tile_size + tile_gap) - tile_gap
 	var viewport_size: Vector2 = get_viewport_rect().size
+	var available_h: float = viewport_size.y - 90.0 - 80.0  # top panel + bottom button area
 	position = Vector2(
 		(viewport_size.x - total_w) / 2.0,
-		(viewport_size.y - total_h) / 2.0 - 60  # leave room for UI at bottom
+		90.0 + (available_h - total_h) / 2.0
 	)
 
 	_spawn_tiles()
