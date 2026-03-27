@@ -356,7 +356,7 @@
 <!-- ═══ SCREEN 1 : Setup ═══ -->
 <div class="screen active" id="screen-setup">
   <h1 class="logo">🔮 TAROT AI 🔮</h1>
-  <p class="subtitle">ไพ่ทาโรต์ · วิเคราะห์โดย Gemini AI · ภาษาไทย</p>
+  <p class="subtitle">ไพ่ทาโรต์ · วิเคราะห์โดย ChatGPT · ภาษาไทย</p>
 
   <div class="panel">
     <label class="field-label">ถามสิ่งที่อยู่ในใจ</label>
@@ -413,7 +413,7 @@
     <div class="spread-grid" id="spread-grid"></div>
 
     <div class="ai-box">
-      <div class="ai-box-title">✦ การวิเคราะห์โดย Gemini AI ✦</div>
+      <div class="ai-box-title">✦ การวิเคราะห์โดย ChatGPT ✦</div>
 
       <div class="loading" id="ai-loading">
         <span class="orb">🔮</span>
@@ -433,8 +433,8 @@
    CONFIG  —  API key อยู่ที่นี่เท่านั้น
    ⚠️ อย่าแชร์ไฟล์นี้แบบสาธารณะ
 ═══════════════════════════════════════════ */
-const GEMINI_KEY = 'AIzaSyDxQg_GMTICT7rq-NugiBbZIwETKfVlrwA';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${GEMINI_KEY}`;
+const OPENAI_KEY = ' ใส่ API Key ของคุณที่นี่ ';
+const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
 
 /* ═══════════════════════════════════════════
    TAROT CARD DATABASE  (78 ใบ)
@@ -696,7 +696,7 @@ function renderSpread() {
 }
 
 /* ═══════════════════════════════════════════
-   GEMINI API CALL
+   OPENAI API CALL
 ═══════════════════════════════════════════ */
 async function fetchGemini() {
   document.getElementById('ai-loading').style.display = 'block';
@@ -718,12 +718,17 @@ ${list}
 กรุณาวิเคราะห์ไพ่แต่ละใบตามตำแหน่งของมัน แล้วสรุปภาพรวมที่เชื่อมโยงกันในตอนท้าย เขียนเป็นภาษาไทยที่ไพเราะและอบอุ่น ให้ความรู้สึกลึกซึ้งและเข้าถึงได้ ไม่ต้องเกริ่นนำยาว`;
 
   try {
-    const res = await fetch(GEMINI_URL, {
+    const res = await fetch(OPENAI_URL, {
       method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_KEY}`,
+      },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.85, maxOutputTokens: 1600 },
+        model: 'gpt-4o-mini',
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.85,
+        max_tokens: 1600,
       }),
     });
 
@@ -733,7 +738,7 @@ ${list}
     }
 
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+    const text = data?.choices?.[0]?.message?.content?.trim()
       || 'ไม่สามารถรับคำทำนายได้ กรุณาลองอีกครั้ง';
 
     showResult(text);
