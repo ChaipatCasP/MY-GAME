@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🔮 ไพ่ทาโรต์ AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:           #07040f;
+      --panel:        rgba(16, 7, 36, 0.88);
+      --gold:         #d4af37;
+      --gold-light:   #f5d76e;
+      --gold-dim:     rgba(212,175,55,0.25);
+      --purple:       #7b3fce;
+      --purple-glow:  rgba(123,63,206,0.4);
+      --text:         #e8d5b7;
+      --text-dim:     #9a8a70;
+      --card-dark:    #130828;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Noto Sans Thai', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ────────── Stars ────────── */
+    #stars { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #fff;
+      animation: twinkle var(--d,3s) ease-in-out infinite;
+      animation-delay: var(--dl,0s);
+    }
+    @keyframes twinkle {
+      0%,100% { opacity:.08; transform:scale(1); }
+      50%      { opacity:.9;  transform:scale(1.4); }
+    }
+
+    /* ────────── Screens ────────── */
+    .screen { position:relative; z-index:1; min-height:100vh; padding:20px; display:none; }
+    .screen.active { display:block; }
+
+    /* ────────── Typography ────────── */
+    .logo {
+      font-family:'Cinzel',serif;
+      font-size: clamp(22px,6vw,40px);
+      color: var(--gold);
+      text-align: center;
+      text-shadow: 0 0 24px rgba(212,175,55,.55);
+      letter-spacing: 4px;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+
+    /* ────────── Panel ────────── */
+    .panel {
+      max-width: 480px;
+      margin: 0 auto;
+      background: var(--panel);
+      border: 1px solid var(--gold-dim);
+      border-radius: 18px;
+      padding: 28px 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 50px var(--purple-glow);
+    }
+
+    /* ────────── Form elements ────────── */
+    .field-label {
+      display: block;
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    textarea {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--gold-dim);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 14px;
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      transition: border-color .3s, box-shadow .3s;
+      margin-bottom: 22px;
+    }
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 14px rgba(212,175,55,.2);
+    }
+
+    /* ────────── Spread options ────────── */
+    .spread-options { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+
+    .spread-btn {
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--gold-dim);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all .25s;
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 15px;
+      text-align: left;
+    }
+    .spread-btn:hover { background:rgba(123,63,206,.18); border-color:var(--gold); }
+    .spread-btn.selected {
+      background: rgba(123,63,206,.28);
+      border-color: var(--gold);
+      box-shadow: 0 0 20px rgba(212,175,55,.12);
+    }
+    .spread-badge {
+      flex-shrink: 0;
+      background: rgba(212,175,55,.14);
+      color: var(--gold);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-family: 'Cinzel', serif;
+      margin-left: 8px;
+    }
+
+    /* ────────── Buttons ────────── */
+    .btn-primary {
+      width: 100%;
+      background: linear-gradient(135deg,#6b21d9,#8f3cf0,#c09020);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+      padding: 16px;
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s, opacity .25s;
+      box-shadow: 0 4px 24px rgba(123,63,206,.45);
+    }
+    .btn-primary:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 8px 32px rgba(123,63,206,.65); }
+    .btn-primary:disabled { opacity:.35; cursor:not-allowed; }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--gold-dim);
+      color: var(--text-dim);
+      border-radius: 8px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-family: 'Noto Sans Thai', sans-serif;
+      font-size: 14px;
+      transition: all .2s;
+    }
+    .btn-ghost:hover { border-color:var(--gold); color:var(--gold); }
+
+    /* ────────── Selection screen ────────── */
+    .sel-header { text-align:center; margin-bottom:16px; }
+    .sel-counter {
+      display: inline-block;
+      background: rgba(212,175,55,.12);
+      border: 1px solid var(--gold);
+      border-radius: 20px;
+      padding: 6px 22px;
+      color: var(--gold);
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      margin: 8px 0 5px;
+    }
+    .sel-hint { color:var(--text-dim); font-size:13px; }
+
+    /* ────────── Cards grid ────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(76px,1fr));
+      gap: 7px;
+      max-height: 52vh;
+      overflow-y: auto;
+      padding: 8px;
+      margin-bottom: 14px;
+    }
+    .cards-grid::-webkit-scrollbar { width:3px; }
+    .cards-grid::-webkit-scrollbar-thumb { background:var(--purple); border-radius:2px; }
+
+    /* ────────── Card flip ────────── */
+    .card-slot { perspective:900px; cursor:pointer; }
+    .card-inner {
+      width: 100%;
+      padding-bottom: 174%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform .55s cubic-bezier(.4,0,.2,1);
+    }
+    .card-slot.flipped .card-inner { transform:rotateY(180deg); }
+
+    .card-face, .card-back {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Card back – mystical */
+    .card-back {
+      background: linear-gradient(160deg,#1c0b3a,#0d0620);
+      border: 1px solid rgba(212,175,55,.38);
+    }
+    .card-back::before {
+      content:'✦';
+      font-size:26px;
+      color:rgba(212,175,55,.55);
+      text-shadow:0 0 10px rgba(212,175,55,.35);
+    }
+    .card-back::after {
+      content:'';
+      position:absolute;
+      inset:4px;
+      border:1px solid rgba(212,175,55,.18);
+      border-radius:5px;
+    }
+
+    /* Card face */
+    .card-face {
+      background: linear-gradient(160deg,#1e0c40,#2e1660,#18093a);
+      border: 1px solid var(--gold);
+      transform: rotateY(180deg);
+      padding: 5px 3px;
+      gap: 2px;
+      text-align: center;
+    }
+    .card-slot.selected .card-face {
+      border-color: var(--gold-light);
+      box-shadow: 0 0 18px rgba(212,175,55,.65), inset 0 0 12px rgba(212,175,55,.08);
+    }
+    .card-slot.disabled { opacity:.35; pointer-events:none; }
+
+    .c-num  { font-family:'Cinzel',serif; font-size:8px; color:var(--gold); letter-spacing:1px; }
+    .c-sym  { font-size:18px; line-height:1; }
+    .c-en   { font-family:'Cinzel',serif; font-size:6.5px; color:var(--gold-light); line-height:1.3; }
+    .c-th   { font-size:9px; color:var(--text-dim); line-height:1.3; }
+
+    /* confirm floating btn */
+    .confirm-wrap {
+      position: sticky;
+      bottom: 12px;
+      display: flex;
+      justify-content: center;
+    }
+    .confirm-wrap .btn-primary { max-width:360px; }
+
+    /* ────────── Reading screen ────────── */
+    .reading-wrap { max-width:600px; margin:0 auto; }
+
+    .reading-question {
+      text-align: center;
+      color: var(--text-dim);
+      font-style: italic;
+      font-size: 14px;
+      padding: 10px 16px 18px;
+      border-bottom: 1px solid var(--gold-dim);
+      margin-bottom: 22px;
+    }
+
+    /* Spread layout */
+    .spread-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+    .spread-card {
+      background: var(--panel);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      padding: 12px 8px;
+      width: 86px;
+      text-align: center;
+      box-shadow: 0 0 18px rgba(123,63,206,.22);
+    }
+    .sp-pos   { font-size:10px; color:var(--text-dim); font-family:'Cinzel',serif; letter-spacing:.5px; margin-bottom:5px; }
+    .sp-sym   { font-size:26px; display:block; margin-bottom:4px; }
+    .sp-th    { font-size:11px; color:var(--gold-light); }
+    .sp-en    { font-size:9px; color:var(--text-dim); margin-top:2px; }
+
+    /* AI box */
+    .ai-box {
+      background: var(--panel);
+      border: 1px solid var(--gold-dim);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .ai-box-title {
+      font-family:'Cinzel',serif;
+      color:var(--gold);
+      font-size:13px;
+      letter-spacing:2px;
+      text-align:center;
+      margin-bottom:18px;
+    }
+
+    /* Loading */
+    .loading { text-align:center; padding:36px 20px; }
+    .loading .orb { font-size:56px; display:block; margin-bottom:14px; animation:pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse {
+      0%,100% { transform:scale(1);   filter:brightness(1);   }
+      50%      { transform:scale(1.1); filter:brightness(1.5); }
+    }
+    .loading p { color:var(--text-dim); font-size:14px; animation:fio 1.4s ease-in-out infinite; }
+    @keyframes fio { 0%,100%{opacity:.3} 50%{opacity:1} }
+
+    .ai-text { color:var(--text); line-height:1.95; font-size:15px; white-space:pre-wrap; }
+
+    /* Error */
+    .ai-error { color:#e07070; font-size:14px; line-height:1.7; }
+
+    /* Divider */
+    hr { border:none; border-top:1px solid var(--gold-dim); margin:18px 0; }
+
+    /* Responsive tweaks */
+    @media (max-width:360px) {
+      .cards-grid { grid-template-columns:repeat(auto-fill,minmax(66px,1fr)); }
+      .spread-card { width:78px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="stars"></div>
+
+<!-- ═══ SCREEN 1 : Setup ═══ -->
+<div class="screen active" id="screen-setup">
+  <h1 class="logo">🔮 TAROT AI 🔮</h1>
+  <p class="subtitle">ไพ่ทาโรต์ · วิเคราะห์โดย Gemini AI · ภาษาไทย</p>
+
+  <div class="panel">
+    <label class="field-label">ถามสิ่งที่อยู่ในใจ</label>
+    <textarea id="q-input" rows="3"
+      placeholder="เช่น ความรัก การงาน การเงิน ทิศทางชีวิต ..."></textarea>
+
+    <label class="field-label">รูปแบบการจัดวางไพ่</label>
+    <div class="spread-options">
+      <button class="spread-btn" data-spread="one" onclick="pickSpread(this)">
+        <span>✨ ไพ่ใบเดียว — Card of the Day</span>
+        <span class="spread-badge">1 ใบ</span>
+      </button>
+      <button class="spread-btn" data-spread="three" onclick="pickSpread(this)">
+        <span>🌟 สามโลก — อดีต · ปัจจุบัน · อนาคต</span>
+        <span class="spread-badge">3 ใบ</span>
+      </button>
+      <button class="spread-btn" data-spread="celtic" onclick="pickSpread(this)">
+        <span>⚜️ Celtic Cross — ภาพรวมชีวิต</span>
+        <span class="spread-badge">10 ใบ</span>
+      </button>
+    </div>
+
+    <button class="btn-primary" id="start-btn" onclick="goSelect()" disabled>
+      เปิดดูไพ่
+    </button>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 2 : Card Selection ═══ -->
+<div class="screen" id="screen-selection">
+  <div class="sel-header">
+    <h1 class="logo" style="font-size:22px">เลือกไพ่</h1>
+    <div class="sel-counter" id="sel-counter">0 / 0 ใบ</div>
+    <p class="sel-hint" id="sel-hint">คลิกไพ่ที่ดึงดูดใจคุณ</p>
+  </div>
+
+  <div class="cards-grid" id="cards-grid"></div>
+
+  <div class="confirm-wrap">
+    <button class="btn-primary" id="confirm-btn" onclick="doReading()" disabled>
+      ✨ ขอคำทำนาย
+    </button>
+  </div>
+</div>
+
+<!-- ═══ SCREEN 3 : Reading ═══ -->
+<div class="screen" id="screen-reading">
+  <div class="reading-wrap">
+    <button class="btn-ghost" onclick="goHome()" style="margin-bottom:18px">← อ่านใหม่</button>
+
+    <h1 class="logo" style="font-size:20px; margin-bottom:4px">คำทำนาย</h1>
+    <div class="reading-question" id="reading-q"></div>
+
+    <div class="spread-grid" id="spread-grid"></div>
+
+    <div class="ai-box">
+      <div class="ai-box-title">✦ การวิเคราะห์โดย Gemini AI ✦</div>
+
+      <div class="loading" id="ai-loading">
+        <span class="orb">🔮</span>
+        <p>กำลังอ่านพลังงานแห่งจักรวาล...</p>
+      </div>
+
+      <div id="ai-result" style="display:none">
+        <p class="ai-text" id="ai-text"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ═══════════════════════════════════════════
+   CONFIG  —  API key อยู่ที่นี่เท่านั้น
+   ⚠️ อย่าแชร์ไฟล์นี้แบบสาธารณะ
+═══════════════════════════════════════════ */
+const GEMINI_KEY = 'AIzaSyDxQg_GMTICT7rq-NugiBbZIwETKfVlrwA';
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+
+/* ═══════════════════════════════════════════
+   TAROT CARD DATABASE  (78 ใบ)
+═══════════════════════════════════════════ */
+const CARDS = [
+  // ── Major Arcana (22) ──────────────────────────────────────────────
+  {id:'M00', sym:'🌟', en:'The Fool',           th:'คนโง่เขลา',          arcana:'major', num:'0'   },
+  {id:'M01', sym:'⚡', en:'The Magician',        th:'นักมายากล',          arcana:'major', num:'I'   },
+  {id:'M02', sym:'🌙', en:'High Priestess',      th:'นักบวชหญิง',         arcana:'major', num:'II'  },
+  {id:'M03', sym:'🌺', en:'The Empress',         th:'จักรพรรดิ์หญิง',     arcana:'major', num:'III' },
+  {id:'M04', sym:'👑', en:'The Emperor',         th:'จักรพรรดิ์',         arcana:'major', num:'IV'  },
+  {id:'M05', sym:'🏛️', en:'The Hierophant',      th:'ปุโรหิต',            arcana:'major', num:'V'   },
+  {id:'M06', sym:'💞', en:'The Lovers',          th:'คู่รัก',             arcana:'major', num:'VI'  },
+  {id:'M07', sym:'🏇', en:'The Chariot',         th:'รถศึก',              arcana:'major', num:'VII' },
+  {id:'M08', sym:'🦁', en:'Strength',            th:'พลัง',               arcana:'major', num:'VIII'},
+  {id:'M09', sym:'🏮', en:'The Hermit',          th:'ฤๅษี',               arcana:'major', num:'IX'  },
+  {id:'M10', sym:'🎡', en:'Wheel of Fortune',    th:'วงล้อโชคชะตา',       arcana:'major', num:'X'   },
+  {id:'M11', sym:'⚖️', en:'Justice',             th:'ความยุติธรรม',       arcana:'major', num:'XI'  },
+  {id:'M12', sym:'🙃', en:'The Hanged Man',      th:'ชายถูกแขวน',         arcana:'major', num:'XII' },
+  {id:'M13', sym:'💀', en:'Death',               th:'การเปลี่ยนแปลง',     arcana:'major', num:'XIII'},
+  {id:'M14', sym:'🌊', en:'Temperance',          th:'ความพอดี',           arcana:'major', num:'XIV' },
+  {id:'M15', sym:'😈', en:'The Devil',           th:'ปีศาจ',              arcana:'major', num:'XV'  },
+  {id:'M16', sym:'🗼', en:'The Tower',           th:'หอคอย',              arcana:'major', num:'XVI' },
+  {id:'M17', sym:'⭐', en:'The Star',            th:'ดาว',                arcana:'major', num:'XVII'},
+  {id:'M18', sym:'🌕', en:'The Moon',            th:'ดวงจันทร์',          arcana:'major', num:'XVIII'},
+  {id:'M19', sym:'☀️', en:'The Sun',             th:'ดวงอาทิตย์',          arcana:'major', num:'XIX' },
+  {id:'M20', sym:'📯', en:'Judgement',           th:'การพิพากษา',         arcana:'major', num:'XX'  },
+  {id:'M21', sym:'🌍', en:'The World',           th:'โลก',                arcana:'major', num:'XXI' },
+  // ── Wands 🔥 (14) ─────────────────────────────────────────────────
+  {id:'W01', sym:'🔥', en:'Ace of Wands',        th:'เอซไม้เท้า',         arcana:'wands' },
+  {id:'W02', sym:'🔥', en:'2 of Wands',          th:'2 ไม้เท้า',           arcana:'wands' },
+  {id:'W03', sym:'🔥', en:'3 of Wands',          th:'3 ไม้เท้า',           arcana:'wands' },
+  {id:'W04', sym:'🔥', en:'4 of Wands',          th:'4 ไม้เท้า',           arcana:'wands' },
+  {id:'W05', sym:'🔥', en:'5 of Wands',          th:'5 ไม้เท้า',           arcana:'wands' },
+  {id:'W06', sym:'🔥', en:'6 of Wands',          th:'6 ไม้เท้า',           arcana:'wands' },
+  {id:'W07', sym:'🔥', en:'7 of Wands',          th:'7 ไม้เท้า',           arcana:'wands' },
+  {id:'W08', sym:'🔥', en:'8 of Wands',          th:'8 ไม้เท้า',           arcana:'wands' },
+  {id:'W09', sym:'🔥', en:'9 of Wands',          th:'9 ไม้เท้า',           arcana:'wands' },
+  {id:'W10', sym:'🔥', en:'10 of Wands',         th:'10 ไม้เท้า',          arcana:'wands' },
+  {id:'W11', sym:'🔥', en:'Page of Wands',       th:'เพจไม้เท้า',          arcana:'wands' },
+  {id:'W12', sym:'🔥', en:'Knight of Wands',     th:'อัศวินไม้เท้า',       arcana:'wands' },
+  {id:'W13', sym:'🔥', en:'Queen of Wands',      th:'ราชินีไม้เท้า',       arcana:'wands' },
+  {id:'W14', sym:'🔥', en:'King of Wands',       th:'กษัตริย์ไม้เท้า',     arcana:'wands' },
+  // ── Cups 💧 (14) ──────────────────────────────────────────────────
+  {id:'C01', sym:'💧', en:'Ace of Cups',         th:'เอซถ้วย',             arcana:'cups' },
+  {id:'C02', sym:'💧', en:'2 of Cups',           th:'2 ถ้วย',              arcana:'cups' },
+  {id:'C03', sym:'💧', en:'3 of Cups',           th:'3 ถ้วย',              arcana:'cups' },
+  {id:'C04', sym:'💧', en:'4 of Cups',           th:'4 ถ้วย',              arcana:'cups' },
+  {id:'C05', sym:'💧', en:'5 of Cups',           th:'5 ถ้วย',              arcana:'cups' },
+  {id:'C06', sym:'💧', en:'6 of Cups',           th:'6 ถ้วย',              arcana:'cups' },
+  {id:'C07', sym:'💧', en:'7 of Cups',           th:'7 ถ้วย',              arcana:'cups' },
+  {id:'C08', sym:'💧', en:'8 of Cups',           th:'8 ถ้วย',              arcana:'cups' },
+  {id:'C09', sym:'💧', en:'9 of Cups',           th:'9 ถ้วย',              arcana:'cups' },
+  {id:'C10', sym:'💧', en:'10 of Cups',          th:'10 ถ้วย',             arcana:'cups' },
+  {id:'C11', sym:'💧', en:'Page of Cups',        th:'เพจถ้วย',             arcana:'cups' },
+  {id:'C12', sym:'💧', en:'Knight of Cups',      th:'อัศวินถ้วย',          arcana:'cups' },
+  {id:'C13', sym:'💧', en:'Queen of Cups',       th:'ราชินีถ้วย',          arcana:'cups' },
+  {id:'C14', sym:'💧', en:'King of Cups',        th:'กษัตริย์ถ้วย',        arcana:'cups' },
+  // ── Swords 💨 (14) ────────────────────────────────────────────────
+  {id:'S01', sym:'💨', en:'Ace of Swords',       th:'เอซดาบ',              arcana:'swords' },
+  {id:'S02', sym:'💨', en:'2 of Swords',         th:'2 ดาบ',               arcana:'swords' },
+  {id:'S03', sym:'💨', en:'3 of Swords',         th:'3 ดาบ',               arcana:'swords' },
+  {id:'S04', sym:'💨', en:'4 of Swords',         th:'4 ดาบ',               arcana:'swords' },
+  {id:'S05', sym:'💨', en:'5 of Swords',         th:'5 ดาบ',               arcana:'swords' },
+  {id:'S06', sym:'💨', en:'6 of Swords',         th:'6 ดาบ',               arcana:'swords' },
+  {id:'S07', sym:'💨', en:'7 of Swords',         th:'7 ดาบ',               arcana:'swords' },
+  {id:'S08', sym:'💨', en:'8 of Swords',         th:'8 ดาบ',               arcana:'swords' },
+  {id:'S09', sym:'💨', en:'9 of Swords',         th:'9 ดาบ',               arcana:'swords' },
+  {id:'S10', sym:'💨', en:'10 of Swords',        th:'10 ดาบ',              arcana:'swords' },
+  {id:'S11', sym:'💨', en:'Page of Swords',      th:'เพจดาบ',              arcana:'swords' },
+  {id:'S12', sym:'💨', en:'Knight of Swords',    th:'อัศวินดาบ',           arcana:'swords' },
+  {id:'S13', sym:'💨', en:'Queen of Swords',     th:'ราชินีดาบ',           arcana:'swords' },
+  {id:'S14', sym:'💨', en:'King of Swords',      th:'กษัตริย์ดาบ',         arcana:'swords' },
+  // ── Pentacles 🌿 (14) ─────────────────────────────────────────────
+  {id:'P01', sym:'🌿', en:'Ace of Pentacles',    th:'เอซเหรียญ',           arcana:'pentacles' },
+  {id:'P02', sym:'🌿', en:'2 of Pentacles',      th:'2 เหรียญ',            arcana:'pentacles' },
+  {id:'P03', sym:'🌿', en:'3 of Pentacles',      th:'3 เหรียญ',            arcana:'pentacles' },
+  {id:'P04', sym:'🌿', en:'4 of Pentacles',      th:'4 เหรียญ',            arcana:'pentacles' },
+  {id:'P05', sym:'🌿', en:'5 of Pentacles',      th:'5 เหรียญ',            arcana:'pentacles' },
+  {id:'P06', sym:'🌿', en:'6 of Pentacles',      th:'6 เหรียญ',            arcana:'pentacles' },
+  {id:'P07', sym:'🌿', en:'7 of Pentacles',      th:'7 เหรียญ',            arcana:'pentacles' },
+  {id:'P08', sym:'🌿', en:'8 of Pentacles',      th:'8 เหรียญ',            arcana:'pentacles' },
+  {id:'P09', sym:'🌿', en:'9 of Pentacles',      th:'9 เหรียญ',            arcana:'pentacles' },
+  {id:'P10', sym:'🌿', en:'10 of Pentacles',     th:'10 เหรียญ',           arcana:'pentacles' },
+  {id:'P11', sym:'🌿', en:'Page of Pentacles',   th:'เพจเหรียญ',           arcana:'pentacles' },
+  {id:'P12', sym:'🌿', en:'Knight of Pentacles', th:'อัศวินเหรียญ',        arcana:'pentacles' },
+  {id:'P13', sym:'🌿', en:'Queen of Pentacles',  th:'ราชินีเหรียญ',        arcana:'pentacles' },
+  {id:'P14', sym:'🌿', en:'King of Pentacles',   th:'กษัตริย์เหรียญ',      arcana:'pentacles' },
+];
+
+/* ═══════════════════════════════════════════
+   SPREAD DEFINITIONS
+═══════════════════════════════════════════ */
+const SPREADS = {
+  one: {
+    name: 'ไพ่ใบเดียว',
+    count: 1,
+    positions: ['วันนี้'],
+  },
+  three: {
+    name: 'สามโลก',
+    count: 3,
+    positions: ['อดีต', 'ปัจจุบัน', 'อนาคต'],
+  },
+  celtic: {
+    name: 'Celtic Cross',
+    count: 10,
+    positions: [
+      'ปัจจุบัน', 'อุปสรรค', 'รากฐาน', 'อดีตใกล้',
+      'มงกุฎ / ความหวัง', 'อนาคตใกล้',
+      'ทัศนคติของคุณ', 'อิทธิพลภายนอก',
+      'ความหวังและความกลัว', 'ผลลัพธ์สุดท้าย',
+    ],
+  },
+};
+
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+let state = {
+  question: '',
+  spreadKey: null,
+  selected: [],    // [{card, position}]
+  deck: [],        // shuffled CARDS
+};
+
+/* ═══════════════════════════════════════════
+   STARS
+═══════════════════════════════════════════ */
+(function buildStars() {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 130; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.4 + 0.4;
+    s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--dl:${Math.random()*5}s`;
+    c.appendChild(s);
+  }
+})();
+
+/* ═══════════════════════════════════════════
+   SETUP SCREEN
+═══════════════════════════════════════════ */
+document.getElementById('q-input').addEventListener('input', checkReady);
+
+function pickSpread(btn) {
+  document.querySelectorAll('.spread-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.spreadKey = btn.dataset.spread;
+  checkReady();
+}
+
+function checkReady() {
+  const ok = document.getElementById('q-input').value.trim() && state.spreadKey;
+  document.getElementById('start-btn').disabled = !ok;
+}
+
+function goSelect() {
+  state.question = document.getElementById('q-input').value.trim();
+  state.selected  = [];
+  state.deck      = [...CARDS].sort(() => Math.random() - 0.5);
+
+  const sp = SPREADS[state.spreadKey];
+  document.getElementById('sel-counter').textContent = `0 / ${sp.count} ใบ`;
+  document.getElementById('sel-hint').textContent = `คลิกไพ่ที่ดึงดูดใจคุณ ${sp.count} ใบ`;
+
+  buildGrid();
+  showScreen('selection');
+}
+
+/* ═══════════════════════════════════════════
+   CARD GRID
+═══════════════════════════════════════════ */
+function buildGrid() {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  state.deck.forEach((card) => {
+    const slot = document.createElement('div');
+    slot.className = 'card-slot';
+    slot.dataset.id = card.id;
+    slot.onclick = () => onCardClick(slot, card);
+
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+
+    const back = document.createElement('div');
+    back.className = 'card-back';
+
+    const face = document.createElement('div');
+    face.className = 'card-face';
+    face.innerHTML =
+      (card.num ? `<span class="c-num">${card.num}</span>` : '') +
+      `<span class="c-sym">${card.sym}</span>` +
+      `<span class="c-en">${card.en}</span>` +
+      `<span class="c-th">${card.th}</span>`;
+
+    inner.appendChild(back);
+    inner.appendChild(face);
+    slot.appendChild(inner);
+    grid.appendChild(slot);
+  });
+}
+
+function onCardClick(slot, card) {
+  const sp      = SPREADS[state.spreadKey];
+  const already = slot.classList.contains('selected');
+
+  if (!already && state.selected.length >= sp.count) return;
+
+  if (!already) {
+    slot.classList.add('flipped');
+    setTimeout(() => slot.classList.add('selected'), 90);
+    state.selected.push({ card, position: sp.positions[state.selected.length] });
+  } else {
+    slot.classList.remove('selected');
+    setTimeout(() => slot.classList.remove('flipped'), 60);
+    state.selected = state.selected.filter(s => s.card.id !== card.id);
+    state.selected.forEach((s, i) => { s.position = sp.positions[i]; });
+  }
+
+  refreshCounter();
+}
+
+function refreshCounter() {
+  const sp    = SPREADS[state.spreadKey];
+  const count = state.selected.length;
+  document.getElementById('sel-counter').textContent = `${count} / ${sp.count} ใบ`;
+  document.getElementById('confirm-btn').disabled = count !== sp.count;
+
+  // disable / enable unselected cards
+  document.querySelectorAll('.card-slot:not(.selected)').forEach(s => {
+    s.classList.toggle('disabled', count >= sp.count);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   READING  (transition to screen 3)
+═══════════════════════════════════════════ */
+async function doReading() {
+  renderSpread();
+  showScreen('reading');
+  await fetchGemini();
+}
+
+function renderSpread() {
+  document.getElementById('reading-q').textContent = `"${state.question}"`;
+  const grid = document.getElementById('spread-grid');
+  grid.innerHTML = '';
+  state.selected.forEach(({ card, position }) => {
+    const div = document.createElement('div');
+    div.className = 'spread-card';
+    div.innerHTML =
+      `<div class="sp-pos">${position}</div>` +
+      `<span class="sp-sym">${card.sym}</span>` +
+      `<div class="sp-th">${card.th}</div>` +
+      `<div class="sp-en">${card.en}</div>`;
+    grid.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════════
+   GEMINI API CALL
+═══════════════════════════════════════════ */
+async function fetchGemini() {
+  document.getElementById('ai-loading').style.display = 'block';
+  document.getElementById('ai-result').style.display  = 'none';
+
+  const sp   = SPREADS[state.spreadKey];
+  const list = state.selected
+    .map(({ card, position }) => `  • ตำแหน่ง "${position}": ${card.th} (${card.en})`)
+    .join('\n');
+
+  const prompt =
+`คุณคือนักทำนายไพ่ทาโรต์ผู้เชี่ยวชาญ มีความสามารถในการอ่านไพ่อย่างลึกซึ้งและเชื่อมโยงความหมายของไพ่แต่ละใบเข้าด้วยกัน
+
+คำถามของผู้ถาม: "${state.question}"
+การจัดวาง: ${sp.name}
+ไพ่ที่ดึงได้:
+${list}
+
+กรุณาวิเคราะห์ไพ่แต่ละใบตามตำแหน่งของมัน แล้วสรุปภาพรวมที่เชื่อมโยงกันในตอนท้าย เขียนเป็นภาษาไทยที่ไพเราะและอบอุ่น ให้ความรู้สึกลึกซึ้งและเข้าถึงได้ ไม่ต้องเกริ่นนำยาว`;
+
+  try {
+    const res = await fetch(GEMINI_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { temperature: 0.85, maxOutputTokens: 1600 },
+      }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+      || 'ไม่สามารถรับคำทำนายได้ กรุณาลองอีกครั้ง';
+
+    showResult(text);
+  } catch (e) {
+    showResult(`⚠️ เกิดข้อผิดพลาด: ${e.message}\n\nโปรดตรวจสอบ API Key และการเชื่อมต่ออินเทอร์เน็ต`, true);
+  }
+}
+
+function showResult(text, isError = false) {
+  document.getElementById('ai-loading').style.display = 'none';
+  document.getElementById('ai-result').style.display  = 'block';
+  const el = document.getElementById('ai-text');
+  el.className = isError ? 'ai-error' : 'ai-text';
+  if (isError) { el.textContent = text; return; }
+  typewriter(el, text);
+}
+
+/* ═══════════════════════════════════════════
+   TYPEWRITER
+═══════════════════════════════════════════ */
+function typewriter(el, text) {
+  el.textContent = '';
+  let i = 0;
+  const box = el.closest('.ai-box');
+  (function next() {
+    if (i >= text.length) return;
+    el.textContent += text[i++];
+    if (box) box.scrollTop = box.scrollHeight;
+    setTimeout(next, 16);
+  })();
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`screen-${name}`).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function goHome() {
+  showScreen('setup');
+}
+</script>
+</body>
+</html>
