@@ -26,6 +26,9 @@ GameState="*res://src/core/GameState.gd"
 DayManager="*res://src/core/DayManager.gd"
 AudioManager="*res://src/core/AudioManager.gd"
 SaveSystem="*res://src/core/SaveSystem.gd"
+CropDatabase="*res://src/gameplay/farming/CropDatabase.gd"
+IslandDatabase="*res://src/gameplay/quest/IslandDatabase.gd"
+SpiritQuestSystem="*res://src/gameplay/quest/SpiritQuestSystem.gd"
 
 [display]
 

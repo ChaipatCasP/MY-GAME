@@ -1,5 +1,5 @@
 extends Node2D
-## FarmScene — root scene that wires FarmGrid ↔ FarmHUD ↔ CropDatabase.
+## FarmScene — root scene that wires FarmGrid, FarmHUD, and SpiritQuestSystem.
 
 @onready var farm_grid: Node2D = $FarmGrid
 @onready var farm_hud: CanvasLayer = $FarmHUD
@@ -10,9 +10,8 @@ func _ready() -> void:
 	if not GameState.farm_tiles.is_empty():
 		farm_grid.deserialize()
 
-	# Wire harvest events from grid to HUD.
-	farm_grid.connect("child_entered_tree", _on_grid_child_added)
 	DayManager.day_advanced.connect(_on_day_advanced)
+	SpiritQuestSystem.quest_loaded.connect(_on_quest_loaded)
 
 	# Wire Next Day button.
 	var btn: Button = farm_hud.get_node("NextDayButton") as Button
@@ -20,14 +19,15 @@ func _ready() -> void:
 		btn.pressed.connect(DayManager.request_advance)
 
 
-func _on_day_advanced(new_day: int) -> void:
+func _on_day_advanced(_new_day: int) -> void:
 	farm_grid.serialize()
 
 
-func _on_grid_child_added(node: Node) -> void:
-	# Connect harvest signal from newly added CropTile nodes.
-	if node.has_signal("harvested"):
-		node.connect("harvested", _on_tile_harvested)
+func _on_quest_loaded(_island_id: String) -> void:
+	var island: Dictionary = IslandDatabase.get_island(GameState.current_island_id)
+	var track: String = island.get("ambient_music", "") as String
+	if track != "":
+		AudioManager.play_music(track)
 
 
 func _on_tile_harvested(tile: Node) -> void:

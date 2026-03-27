@@ -4,6 +4,7 @@ extends Node
 ## Other systems read from here; only SaveSystem writes to here on load.
 
 signal island_changed(new_island_id: String)
+signal inventory_changed(crop_id: String, new_count: int)
 
 const VERSION: int = 1  # Increment when save format changes
 
@@ -29,6 +30,7 @@ var farm_tiles: Dictionary = {}
 
 func add_to_inventory(crop_id: String, amount: int) -> void:
 	inventory[crop_id] = (inventory.get(crop_id, 0) as int) + amount
+	inventory_changed.emit(crop_id, inventory[crop_id] as int)
 
 
 func remove_from_inventory(crop_id: String, amount: int) -> bool:
@@ -38,6 +40,7 @@ func remove_from_inventory(crop_id: String, amount: int) -> bool:
 	inventory[crop_id] = current - amount
 	if inventory[crop_id] == 0:
 		inventory.erase(crop_id)
+	inventory_changed.emit(crop_id, inventory.get(crop_id, 0) as int)
 	return true
 
 
