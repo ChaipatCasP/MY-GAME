@@ -268,3 +268,4 @@ Tested on **Windows 10** with Git Bash. All hooks use POSIX-compatible patterns 
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
+# MY-GAME
