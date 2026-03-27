@@ -1,0 +1,56 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; but the file format is well-documented and modifiable.
+
+; https://docs.godotengine.org/en/stable/tutorials/misc/configuration_files.html
+
+[configuration]
+
+config_version=5
+
+[application]
+
+config/name="Drifting Seasons"
+config/description="A cozy farming sim where your floating island drifts between seasonal spirit realms."
+config/tags=["farming", "cozy", "mobile"]
+config/version="0.1.0"
+run/main_scene="res://src/core/Boot.tscn"
+config/use_custom_user_dir=false
+config/quit_on_go_back=true
+config/features=PackedStringArray("4.6", "Mobile")
+config/icon="res://assets/ui/icon.png"
+
+[autoload]
+
+GameState="*res://src/core/GameState.gd"
+DayManager="*res://src/core/DayManager.gd"
+AudioManager="*res://src/core/AudioManager.gd"
+SaveSystem="*res://src/core/SaveSystem.gd"
+
+[display]
+
+window/size/viewport_width=390
+window/size/viewport_height=844
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+window/handheld/orientation="portrait"
+window/per_pixel_transparency/allowed=false
+
+[physics]
+
+2d/default_gravity=980.0
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+environment/defaults/default_clear_color=Color(0.15, 0.12, 0.1, 1)
+renderer/rendering_method="mobile"
+renderer/rendering_method.mobile="gl_compatibility"
+
+[layer_names]
+
+2d_render/layer_1="world"
+2d_render/layer_2="crops"
+2d_render/layer_3="ui"
+2d_render/layer_4="overlay"

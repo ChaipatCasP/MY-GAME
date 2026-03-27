@@ -1,0 +1,106 @@
+[
+  {
+    "island_id": "island_spring",
+    "season": "Spring",
+    "color_palette": ["#B8E4A0", "#F9F3C7", "#8FC97A", "#FFFFFF"],
+    "ambient_music": "spring_ambient",
+    "available_seeds": ["clover"],
+    "spirit": {
+      "spirit_id": "spirit_spring",
+      "name": "Haru",
+      "title": "The Waker of Seeds",
+      "portrait_asset": "spirit_spring",
+      "dialogue_intro": "Oh! A floating farm... I haven't seen one of those in a long, long time. Welcome, wanderer. My name is Haru.",
+      "dialogue_quest_given": "My meadow is tired. It needs 6 Clover to bloom again. Will you grow them for me?",
+      "dialogue_partial_deliver": "These are lovely. Keep going — the meadow can feel them already.",
+      "dialogue_complete": "The meadow is singing! You may take some Moonbloom seeds as thanks. May the wind carry you somewhere beautiful.",
+      "dialogue_leave_incomplete": "Oh... I understand. The wind is calling you. Come back someday."
+    },
+    "quest": {
+      "required_crops": [{ "crop_id": "clover", "amount": 6 }],
+      "reward_seed": "moonbloom",
+      "reward_lore_fragment": 0
+    }
+  },
+  {
+    "island_id": "island_summer",
+    "season": "Summer",
+    "color_palette": ["#F5C84A", "#F9954A", "#FFE87A", "#4A9BCC"],
+    "ambient_music": "summer_ambient",
+    "available_seeds": ["sunflower", "moonbloom"],
+    "spirit": {
+      "spirit_id": "spirit_summer",
+      "name": "Natsu",
+      "title": "The Keeper of Brilliant Things",
+      "portrait_asset": "spirit_summer",
+      "dialogue_intro": "AHAHA! A FARM! FLOATING! Right here! This is the most wonderful thing I have seen all season, and I have seen MANY wonderful things.",
+      "dialogue_quest_given": "My festival is almost here and I need something golden. Bring me 4 Sunflowers and 2 Moonblooms. BIG ones, yes? Well, any size.",
+      "dialogue_partial_deliver": "Yes, yes! More, more! The festival drums are already beating!",
+      "dialogue_complete": "PERFECT! The festival can begin! Here — Amber Wheat seeds. A gift from the sun itself. Well. From me. Same thing.",
+      "dialogue_leave_incomplete": "Ah... the festival will be a little quieter this year. Come back before next summer, yes? The drums will still be waiting."
+    },
+    "quest": {
+      "required_crops": [
+        { "crop_id": "sunflower", "amount": 4 },
+        { "crop_id": "moonbloom", "amount": 2 }
+      ],
+      "reward_seed": "amber_wheat",
+      "reward_lore_fragment": 1
+    }
+  },
+  {
+    "island_id": "island_autumn",
+    "season": "Autumn",
+    "color_palette": ["#D4622A", "#8B3A1A", "#F0A830", "#3A2A18"],
+    "ambient_music": "autumn_ambient",
+    "available_seeds": ["wheat"],
+    "spirit": {
+      "spirit_id": "spirit_autumn",
+      "name": "Aki",
+      "title": "The Keeper of What Remains",
+      "portrait_asset": "spirit_autumn",
+      "dialogue_intro": "...You came.\nThe wind doesn't bring visitors very often anymore.",
+      "dialogue_quest_given": "The harvest was... thin this year. If you could bring me 8 Wheat — or some Amber if you've found it — I could put the field to rest properly.",
+      "dialogue_partial_deliver": "...This helps.\nA little.",
+      "dialogue_complete": "...Thank you.\nThe field is resting now. Here. Frostbell seeds. For the winter ahead.",
+      "dialogue_leave_incomplete": "...\nIt's all right.\nThe field understands."
+    },
+    "quest": {
+      "required_crops": [
+        { "crop_id": "wheat", "amount": 6 },
+        { "crop_id": "amber_wheat", "amount": 2 }
+      ],
+      "reward_seed": "frostbell",
+      "reward_lore_fragment": 2,
+      "substitutions": [
+        { "crop_id": "amber_wheat", "counts_as": "wheat", "multiplier": 2 }
+      ]
+    }
+  },
+  {
+    "island_id": "island_winter",
+    "season": "Winter",
+    "color_palette": ["#D8EEFF", "#8BB8D8", "#FFFFFF", "#2A4060"],
+    "ambient_music": "winter_ambient",
+    "available_seeds": ["snowdrop"],
+    "spirit": {
+      "spirit_id": "spirit_winter",
+      "name": "Fuyu",
+      "title": "The One Who Remembers",
+      "portrait_asset": "spirit_winter",
+      "dialogue_intro": "I have been waiting a very long time.\nI am glad you found me before the cold grew too deep.",
+      "dialogue_quest_given": "There is one thing I need before I can let the world remember spring again. Can you bring me 4 Snowdrops? Something that survives the cold, to prove life persists.",
+      "dialogue_partial_deliver": "They're beautiful. Each one that survives the frost is a small miracle.",
+      "dialogue_complete": "...Yes.\nIt is enough. The world remembers now.\n\nYou may go home, wanderer.\nThe seasons will find their way back.",
+      "dialogue_leave_incomplete": "The cold will hold a little longer.\nBut you will return.\nI have always known you would return."
+    },
+    "quest": {
+      "required_crops": [
+        { "crop_id": "snowdrop", "amount": 3 },
+        { "crop_id": "frostbell", "amount": 1 }
+      ],
+      "reward_seed": "spiritgrass",
+      "reward_lore_fragment": 3
+    }
+  }
+]

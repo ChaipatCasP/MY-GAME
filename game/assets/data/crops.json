@@ -1,0 +1,74 @@
+[
+  {
+    "id": "clover",
+    "display_name": "Clover",
+    "grow_days": 1,
+    "yield": 2,
+    "season_affinity": "Spring",
+    "description": "A cheerful little plant that springs up overnight.",
+    "cross_seed_parent": false
+  },
+  {
+    "id": "sunflower",
+    "display_name": "Sunflower",
+    "grow_days": 2,
+    "yield": 2,
+    "season_affinity": "Summer",
+    "description": "Turns toward the light. Big, bright, and reliable.",
+    "cross_seed_parent": false
+  },
+  {
+    "id": "spiritgrass",
+    "display_name": "Spirit Grass",
+    "grow_days": 2,
+    "yield": 3,
+    "season_affinity": "Spring",
+    "description": "Glows faintly at the edges. Hard to grow outside spring.",
+    "cross_seed_recipe": ["clover", "moonbloom"]
+  },
+  {
+    "id": "wheat",
+    "display_name": "Wheat",
+    "grow_days": 3,
+    "yield": 3,
+    "season_affinity": "Autumn",
+    "description": "The smell of wheat in autumn is the smell of home.",
+    "cross_seed_parent": false
+  },
+  {
+    "id": "moonbloom",
+    "display_name": "Moonbloom",
+    "grow_days": 3,
+    "yield": 2,
+    "season_affinity": "Summer",
+    "description": "Blooms only under moonlight. Petals feel like velvet.",
+    "cross_seed_parent": false
+  },
+  {
+    "id": "amber_wheat",
+    "display_name": "Amber Wheat",
+    "grow_days": 4,
+    "yield": 4,
+    "season_affinity": "Summer",
+    "description": "Wheat that soaked up too much sun and turned golden.",
+    "cross_seed_recipe": ["wheat", "sunflower"]
+  },
+  {
+    "id": "snowdrop",
+    "display_name": "Snowdrop",
+    "grow_days": 4,
+    "yield": 2,
+    "season_affinity": "Winter",
+    "description": "One of the few things that blooms when everything else sleeps.",
+    "cross_seed_parent": false
+  },
+  {
+    "id": "frostbell",
+    "display_name": "Frostbell",
+    "grow_days": 5,
+    "yield": 3,
+    "season_affinity": "Winter",
+    "description": "Its petals ring softly in the cold wind.",
+    "cross_seed_recipe": ["snowdrop", "clover"]
+  }
+]
