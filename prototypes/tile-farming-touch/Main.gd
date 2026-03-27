@@ -20,6 +20,7 @@ var total_harvested: int = 0
 
 func _ready() -> void:
 	grid.setup(GRID_COLS, GRID_ROWS, TILE_SIZE, TILE_GAP)
+	next_day_btn.pressed.connect(_on_next_day_pressed)
 	_update_ui()
 
 
